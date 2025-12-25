@@ -1,0 +1,121 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+}
+
+body {
+    background-color: #121212;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    padding-top: 50px;
+}
+
+.player {
+    background-color: #1e1e1e;
+    padding: 25px;
+    border-radius: 15px;
+    width: 95%;
+    max-width: 500px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    text-align: center;
+}
+
+h2 {
+    color: #1db954;
+    margin-bottom: 20px;
+}
+
+form input {
+    width: 70%;
+    padding: 10px 15px;
+    border-radius: 20px;
+    border: none;
+    outline: none;
+    margin-bottom: 10px;
+}
+
+form button {
+    padding: 10px 20px;
+    border-radius: 25px;
+    border: none;
+    background: #1db954;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-left: 5px;
+}
+
+form button:hover {
+    background: #17a44c;
+}
+
+#status {
+    margin-top: 10px;
+    font-style: italic;
+    color: #ccc;
+}
+
+#nowPlaying {
+    margin: 15px 0;
+    font-size: 16px;
+}
+
+audio {
+    width: 100%;
+    margin-top: 15px;
+    border-radius: 8px;
+}
+
+.queue-section {
+    margin-top: 20px;
+    text-align: left;
+}
+
+ul {
+    list-style: none;
+    margin-top: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+    padding-left: 0;
+}
+
+li {
+    padding: 8px 12px;
+    margin-bottom: 5px;
+    border-radius: 8px;
+    background-color: #2a2a2a;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+li:hover {
+    background-color: #333;
+}
+
+.controls {
+    margin-top: 20px;
+}
+
+.controls button {
+    background: #1db954;
+    color: #000;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    margin: 0 5px;
+    transition: 0.3s;
+}
+
+.controls button:hover {
+    background: #17a44c;
+}
+
+li.current {
+    background-color: #1db954;
+    color: #000;
+    font-weight: bold;
+}

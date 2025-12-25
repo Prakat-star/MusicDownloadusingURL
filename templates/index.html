@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>YouTube Audio Player</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="player">
+    <h2>🎵 YouTube Audio Player</h2>
+
+    <form id="addTrackForm">
+        <input type="text" id="trackUrl" placeholder="Enter YouTube URL" autocomplete="off" required>
+        <button type="submit">Add</button>
+    </form>
+
+    <p id="status"></p>
+    <p id="nowPlaying">Now Playing: -</p>
+    <audio id="audioPlayer" controls></audio>
+
+    <div class="queue-section">
+        <h3>Queue</h3>
+        <ul id="queueList"></ul>
+    </div>
+
+    <div class="controls">
+        <button id="prevBtn">⏮ Previous</button>
+        <button id="nextBtn">⏭ Next</button>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
