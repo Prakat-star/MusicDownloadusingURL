@@ -10,7 +10,7 @@ const status = document.getElementById("status");
 let queue = [];
 let currentIndex = 0;
 
-// Fetch queue from server
+
 async function fetchQueue() {
     const res = await fetch("/queue");
     queue = await res.json();
@@ -41,7 +41,7 @@ function loadTrack(index){
     renderQueue();
 }
 
-// Add new track
+
 addTrackForm.addEventListener("submit", async e=>{
     e.preventDefault();
     const url = trackUrl.value.trim();
@@ -65,7 +65,7 @@ addTrackForm.addEventListener("submit", async e=>{
     }
 });
 
-// Next / Previous buttons
+
 nextBtn.addEventListener("click", async ()=>{
     await fetch("/action", {
         method:"POST",
@@ -83,7 +83,7 @@ prevBtn.addEventListener("click", async ()=>{
     fetchQueue();
 });
 
-// Click on queue to play track
+
 queueList.addEventListener("click", e=>{
     if(e.target.tagName==="LI"){
         const index = parseInt(e.target.dataset.index);
