@@ -8,7 +8,7 @@ app = Flask(__name__)
 DOWNLOAD_FOLDER = "downloads"
 os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 
-queue = []  # Each track: {"id":..., "name":..., "file":...}
+queue = []  
 
 def download_youtube_audio(url):
     yt = YouTube(url)
