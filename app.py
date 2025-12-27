@@ -5,7 +5,7 @@ from flask import Flask, jsonify, request, render_template
 from supabase import create_client
 from dotenv import load_dotenv
 
-# Load env vars
+
 load_dotenv()
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 SUPABASE_URL = os.getenv("SUPABASE_URL")
@@ -13,13 +13,13 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 BUCKET_NAME = "mp3-storage"
 AUDIO_QUALITY = "192k"
 
-# NEW: visible temp download folder
+
 DOWNLOAD_FOLDER = "downloads"
 os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 
 app = Flask(__name__)
 
-# Supabase client
+
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 @app.route("/")
@@ -34,13 +34,12 @@ def download():
     if not url:
         return jsonify({"error": "No URL provided"}), 400
 
-    # unique filename pattern (playlist-safe)
+
     output_template = os.path.join(
         DOWNLOAD_FOLDER,
         "%(title)s-%(id)s.%(ext)s"
     )
 
-    # 1️⃣ Download (playlist ENABLED)
     try:
         subprocess.run(
             [
@@ -58,7 +57,7 @@ def download():
 
     uploaded_files = []
 
-    # 2️⃣ Upload everything downloaded
+ 
     for file in os.listdir(DOWNLOAD_FOLDER):
         if file.endswith(".mp3"):
             file_path = os.path.join(DOWNLOAD_FOLDER, file)
