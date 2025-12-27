@@ -1,33 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>YouTube Audio Player</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>YouTube MP3 Downloader</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 </head>
 <body>
-<div class="player">
-    <h2>🎵 YouTube Audio Player</h2>
-
-    <form id="addTrackForm">
-        <input type="text" id="trackUrl" placeholder="Enter YouTube URL" autocomplete="off" required>
-        <button type="submit">Add</button>
+  <div class="container">
+    <h1>YouTube MP3 Downloader</h1>
+    <form id="downloadForm" autocomplete="off">
+      <input
+        type="url"
+        id="urlInput"
+        placeholder="Enter YouTube video URL"
+        required
+      />
+      <button type="submit">Download</button>
     </form>
 
-    <p id="status"></p>
-    <p id="nowPlaying">Now Playing: -</p>
-    <audio id="audioPlayer" controls></audio>
-
-    <div class="queue-section">
-        <h3>Queue</h3>
-        <ul id="queueList"></ul>
+    <div id="loading" class="hidden">
+      <div class="loader"></div>
+      <p>Downloading... please wait</p>
     </div>
 
-    <div class="controls">
-        <button id="prevBtn">⏮ Previous</button>
-        <button id="nextBtn">⏭ Next</button>
+    <div id="result" class="hidden">
+      <p>Download ready:</p>
+      <a id="downloadLink" href="#" download class="btn">Download MP3</a>
+      <audio id="audioPlayer" controls></audio>
     </div>
-</div>
 
-<script src="{{ url_for('static', filename='script.js') }}"></script>
+    <div id="error" class="hidden"></div>
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

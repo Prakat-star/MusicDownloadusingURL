@@ -1,96 +1,53 @@
-const addTrackForm = document.getElementById("addTrackForm");
-const trackUrl = document.getElementById("trackUrl");
-const queueList = document.getElementById("queueList");
-const nowPlaying = document.getElementById("nowPlaying");
-const audio = document.getElementById("audioPlayer");
-const prevBtn = document.getElementById("prevBtn");
-const nextBtn = document.getElementById("nextBtn");
-const status = document.getElementById("status");
+const form = document.getElementById("downloadForm");
+const urlInput = document.getElementById("urlInput");
+const resultDiv = document.getElementById("result");
+const downloadLink = document.getElementById("downloadLink");
+const audioPlayer = document.getElementById("audioPlayer");
+const errorDiv = document.getElementById("error");
+const loadingDiv = document.getElementById("loading");
 
-let queue = [];
-let currentIndex = 0;
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
+  
+  errorDiv.classList.add("hidden");
+  resultDiv.classList.add("hidden");
+  loadingDiv.classList.remove("hidden");
+  downloadLink.href = "#";
+  audioPlayer.src = "";
 
-async function fetchQueue() {
-    const res = await fetch("/queue");
-    queue = await res.json();
-    renderQueue();
-    if(queue.length && !audio.src){
-        loadTrack(0);
+  const url = urlInput.value.trim();
+  if (!url) {
+    loadingDiv.classList.add("hidden");
+    errorDiv.textContent = "Please enter a valid YouTube URL.";
+    errorDiv.classList.remove("hidden");
+    return;
+  }
+
+  try {
+    const response = await fetch("/download", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url }),
+    });
+
+    const data = await response.json();
+
+    loadingDiv.classList.add("hidden");
+
+    if (!response.ok) {
+      throw new Error(data.error || "Download failed");
     }
-}
 
-function renderQueue() {
-    queueList.innerHTML = "";
-    queue.forEach((track, i) => {
-        const li = document.createElement("li");
-        li.textContent = track.name;
-        li.dataset.index = i;
-        if(i === currentIndex) li.classList.add("current");
-        queueList.appendChild(li);
-    });
-}
+    const mp3Url = data.mp3_url;
+    downloadLink.href = mp3Url;
+    downloadLink.download = "";
+    audioPlayer.src = mp3Url;
 
-function loadTrack(index){
-    if(!queue[index]) return;
-    currentIndex = index;
-    const track = queue[index];
-    audio.src = `/downloads/${track.file}`;
-    nowPlaying.textContent = "Now Playing: " + track.name;
-    audio.play();
-    renderQueue();
-}
-
-
-addTrackForm.addEventListener("submit", async e=>{
-    e.preventDefault();
-    const url = trackUrl.value.trim();
-    if(!url) return;
-
-    status.textContent = "Downloading...";
-    const res = await fetch("/add", {
-        method: "POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({url})
-    });
-    const data = await res.json();
-    status.textContent = "";
-
-    if(data.success){
-        trackUrl.value = "";
-        await fetchQueue();
-        loadTrack(queue.length - 1);
-    } else {
-        alert("Error adding track: " + data.error);
-    }
+    resultDiv.classList.remove("hidden");
+  } catch (err) {
+    loadingDiv.classList.add("hidden");
+    errorDiv.textContent = err.message;
+    errorDiv.classList.remove("hidden");
+  }
 });
-
-
-nextBtn.addEventListener("click", async ()=>{
-    await fetch("/action", {
-        method:"POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({action:"next"})
-    });
-    fetchQueue();
-});
-prevBtn.addEventListener("click", async ()=>{
-    await fetch("/action", {
-        method:"POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({action:"prev"})
-    });
-    fetchQueue();
-});
-
-
-queueList.addEventListener("click", e=>{
-    if(e.target.tagName==="LI"){
-        const index = parseInt(e.target.dataset.index);
-        loadTrack(index);
-    }
-});
-
-// Auto fetch queue every 2 seconds
-setInterval(fetchQueue, 2000);
-fetchQueue();

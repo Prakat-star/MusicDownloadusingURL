@@ -1,121 +1,149 @@
+/* Reset */
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Roboto', sans-serif;
+  box-sizing: border-box;
 }
 
 body {
-    background-color: #121212;
-    color: #fff;
-    display: flex;
-    justify-content: center;
-    padding-top: 50px;
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 2rem;
 }
 
-.player {
-    background-color: #1e1e1e;
-    padding: 25px;
-    border-radius: 15px;
-    width: 95%;
-    max-width: 500px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-    text-align: center;
+.container {
+  width: 100%;
+  max-width: 480px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 2rem 3rem 3rem 3rem;
+  border-radius: 15px;
+  box-shadow: 0 0 30px rgba(118, 75, 162, 0.7);
 }
 
-h2 {
-    color: #1db954;
-    margin-bottom: 20px;
+h1 {
+  font-weight: 700;
+  font-size: 2.2rem;
+  margin-bottom: 2rem;
+  text-shadow: 0 0 8px #c085ff;
 }
 
-form input {
-    width: 70%;
-    padding: 10px 15px;
-    border-radius: 20px;
-    border: none;
-    outline: none;
-    margin-bottom: 10px;
+form {
+  display: flex;
+  gap: 0.6rem;
+  margin-bottom: 2rem;
 }
 
-form button {
-    padding: 10px 20px;
-    border-radius: 25px;
-    border: none;
-    background: #1db954;
-    color: #fff;
-    cursor: pointer;
-    transition: 0.3s;
-    margin-left: 5px;
+input[type="url"] {
+  flex-grow: 1;
+  padding: 0.8rem 1.2rem;
+  border-radius: 8px;
+  border: none;
+  font-size: 1rem;
+  outline: none;
+  transition: box-shadow 0.3s ease;
 }
 
-form button:hover {
-    background: #17a44c;
+input[type="url"]:focus {
+  box-shadow: 0 0 8px #c085ff;
 }
 
-#status {
-    margin-top: 10px;
-    font-style: italic;
-    color: #ccc;
+button {
+  background: #c085ff;
+  border: none;
+  border-radius: 8px;
+  padding: 0 1.8rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.3s ease;
 }
 
-#nowPlaying {
-    margin: 15px 0;
-    font-size: 16px;
+button:hover,
+button:focus {
+  background: #ab73e6;
+}
+
+#loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #d0b3ff;
+}
+
+.loader {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #c085ff;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+#result {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 1.4rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(192, 141, 255, 0.7);
+  font-weight: 600;
+}
+
+#result p {
+  margin: 0 0 1rem 0;
+  font-size: 1.2rem;
+}
+
+#downloadLink.btn {
+  display: inline-block;
+  padding: 0.6rem 1.4rem;
+  border-radius: 8px;
+  background: #c085ff;
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.3s ease;
+}
+
+#downloadLink.btn:hover,
+#downloadLink.btn:focus {
+  background: #ab73e6;
 }
 
 audio {
-    width: 100%;
-    margin-top: 15px;
-    border-radius: 8px;
+  width: 100%;
+  margin-top: 1rem;
+  border-radius: 8px;
+  outline: none;
+  background: #fff;
 }
 
-.queue-section {
-    margin-top: 20px;
-    text-align: left;
+#error {
+  margin-top: 1.4rem;
+  font-weight: 700;
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.2);
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(255, 107, 107, 0.5);
 }
 
-ul {
-    list-style: none;
-    margin-top: 10px;
-    max-height: 200px;
-    overflow-y: auto;
-    padding-left: 0;
-}
-
-li {
-    padding: 8px 12px;
-    margin-bottom: 5px;
-    border-radius: 8px;
-    background-color: #2a2a2a;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-li:hover {
-    background-color: #333;
-}
-
-.controls {
-    margin-top: 20px;
-}
-
-.controls button {
-    background: #1db954;
-    color: #000;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 20px;
-    cursor: pointer;
-    margin: 0 5px;
-    transition: 0.3s;
-}
-
-.controls button:hover {
-    background: #17a44c;
-}
-
-li.current {
-    background-color: #1db954;
-    color: #000;
-    font-weight: bold;
+.hidden {
+  display: none;
 }

@@ -1,65 +1,93 @@
-from flask import Flask, request, render_template, jsonify, send_from_directory
-from pytube import YouTube
+import subprocess
 import os
 import uuid
+from flask import Flask, jsonify, request, render_template
+from supabase import create_client
+from dotenv import load_dotenv
 
-app = Flask(__name__)
+
+load_dotenv()
+SUPABASE_KEY = os.getenv("SUPABASE_KEY") #afno hala
+SUPABASE_URL = os.getenv("SUPABASE_URL") #yo pani afnai hala
+
+BUCKET_NAME = "mp3-storage"
+AUDIO_QUALITY = "192k"
 
 DOWNLOAD_FOLDER = "downloads"
 os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 
-queue = []  
+app = Flask(__name__)
 
-def download_youtube_audio(url):
-    yt = YouTube(url)
-    stream = yt.streams.filter(only_audio=True).first()
-    file_id = str(uuid.uuid4())
-    filename = f"{file_id}.mp3"
-    filepath = os.path.join(DOWNLOAD_FOLDER, filename)
-    stream.download(output_path=DOWNLOAD_FOLDER, filename=filename)
-    return filename, yt.title
+
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 @app.route("/")
-def index():
+def home():
     return render_template("index.html")
 
-@app.route("/add", methods=["POST"])
-def add_track():
+@app.route("/download", methods=["POST"])
+def download():
     data = request.get_json()
-    if not data:
-        return jsonify({"success": False, "error": "Invalid JSON"}), 400
-
     url = data.get("url")
+
     if not url:
-        return jsonify({"success": False, "error": "No URL provided"}), 400
+        return jsonify({"error": "No URL provided"}), 400
 
+    
+    output_template = os.path.join(
+        DOWNLOAD_FOLDER,
+        "%(title)s-%(id)s.%(ext)s"
+    )
+
+   
     try:
-        filename, title = download_youtube_audio(url)
-        track_id = str(uuid.uuid4())
-        queue.append({"id": track_id, "name": title, "file": filename})
-        return jsonify({"success": True, "queue": queue})
-    except Exception as e:
-        return jsonify({"success": False, "error": str(e)}), 500
+        subprocess.run(
+            [
+                "python", "-m", "yt_dlp",
+                "-x",
+                "--audio-format", "mp3",
+                "--audio-quality", AUDIO_QUALITY,
+                "-o", output_template,
+                url
+            ],
+            check=True
+        )
+    except subprocess.CalledProcessError as e:
+        return jsonify({"error": f"yt-dlp failed: {e}"}), 500
 
-@app.route("/queue")
-def get_queue():
-    return jsonify(queue)
+    uploaded_files = []
 
-@app.route("/action", methods=["POST"])
-def queue_action():
-    global queue
-    data = request.get_json()
-    action = data.get("action")
-    if action == "next" and queue:
-        queue.pop(0)
-    elif action == "prev" and queue:
-        track = queue.pop(0)
-        queue.append(track)
-    return jsonify({"success": True, "queue": queue})
+    # 2️⃣ Upload everything downloaded
+    for file in os.listdir(DOWNLOAD_FOLDER):
+        if file.endswith(".mp3"):
+            file_path = os.path.join(DOWNLOAD_FOLDER, file)
 
-@app.route("/downloads/<filename>")
-def serve_audio(filename):
-    return send_from_directory(DOWNLOAD_FOLDER, filename)
+            try:
+                with open(file_path, "rb") as f:
+                    supabase.storage.from_(BUCKET_NAME).upload(file, f)
+
+                signed = supabase.storage.from_(BUCKET_NAME).create_signed_url(
+                    file, 3600, options={"download": True}
+                )
+
+                mp3_url = (
+                    signed.get("signedURL")
+                    or signed.get("signed_url")
+                    or signed
+                )
+
+                uploaded_files.append({
+                    "name": file,
+                    "url": mp3_url
+                })
+
+            finally:
+                os.remove(file_path)
+
+    return jsonify({
+        "success": True,
+        "files": uploaded_files
+    })
 
 if __name__ == "__main__":
     app.run(debug=True)
