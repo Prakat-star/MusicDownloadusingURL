@@ -1,5 +1,6 @@
+
 .env
-.downloads/
-.songs/
+.vscode/
+*.pyc
 __pycache__/
-.dist/
+downloads/
