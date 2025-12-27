@@ -1,0 +1,5 @@
+.env
+.downloads/
+.songs/
+__pycache__/
+.dist/
