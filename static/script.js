@@ -9,7 +9,6 @@ const loadingDiv = document.getElementById("loading");
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  
   errorDiv.classList.add("hidden");
   resultDiv.classList.add("hidden");
   loadingDiv.classList.remove("hidden");
@@ -39,7 +38,9 @@ form.addEventListener("submit", async (e) => {
       throw new Error(data.error || "Download failed");
     }
 
-    const mp3Url = data.mp3_url;
+    // ✅ FIX IS HERE
+    const mp3Url = data.files[0].url;
+
     downloadLink.href = mp3Url;
     downloadLink.download = "";
     audioPlayer.src = mp3Url;
