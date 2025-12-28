@@ -38,7 +38,6 @@ def download():
         DOWNLOAD_FOLDER,
         "%(title)s-%(id)s.%(ext)s"
     )
-
     
     result = subprocess.run(
         [
@@ -88,13 +87,12 @@ def download():
 
         finally:
             pass
-            # os.remove(file_path)
+            # os.remove(file_path) 
 
     return jsonify({
         "success": True,
         "files": uploaded_files
     })
-
 
 if __name__ == "__main__":
     app.run(debug=True)
